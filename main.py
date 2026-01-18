@@ -7,14 +7,27 @@ api_key = os.environ.get("GEMINI_API_KEY")
 MODEL_ID = "gemini-2.5-flash"
 client = genai.Client(api_key=api_key)
 
+def generate_content(query: str) -> str:
+    response = client.models.generate_content(model=MODEL_ID, contents=query)
+    print_metadata(query,response)
+    return response.text
+
+def print_metadata(query: str,response: genai.types.GenerateContentResponse) -> str:
+    if not response or not response.usage_metadata:
+        raise ValueError("Usage metadata not found in response or request failed")
+    
+    print(f"User prompt: {query}")
+    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    print("Response:")
+    print(response.text)
 
 def main():
     if not api_key:
         raise ValueError("GEMINI_API_KEY not found in environment variables")
 
     content = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
-    response = client.models.generate_content(model=MODEL_ID, contents=content)
-    print(response.text)
+    generate_content(content)
 
 
 if __name__ == "__main__":
