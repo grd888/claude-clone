@@ -1,4 +1,5 @@
 import os
+import argparse
 from dotenv import load_dotenv
 from google import genai
 
@@ -47,7 +48,11 @@ def main():
     if not api_key:
         raise ValueError("GEMINI_API_KEY not found in environment variables")
 
-    content = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
+    parser = argparse.ArgumentParser(description="Chat with an AI assistant")
+    parser.add_argument("user_prompt", type=str, help="The user prompt")
+    args = parser.parse_args()
+
+    content = args.user_prompt
     generate_content(content)
 
 
