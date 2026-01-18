@@ -1,7 +1,7 @@
 import os
 import subprocess
 from .utils import validate_path
-
+from google.genai import types
 
 def run_python_file(working_directory, file_path, args=None):
     try:
@@ -34,3 +34,26 @@ def run_python_file(working_directory, file_path, args=None):
 
     except Exception as e:
         return f"Error: executing Python file: {e}"
+
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs the specified python file in file_path, relative to the current directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the file, relative to the working directory",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(
+                    type=types.Type.STRING,
+                ),
+                description="Arguments to pass to the Python file",
+            )
+        },
+        required=["file_path"]
+    ),
+)
