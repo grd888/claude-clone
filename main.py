@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 
 from dotenv import load_dotenv
 from google import genai
@@ -7,6 +8,8 @@ from google.genai import types
 
 from prompts import system_prompt
 from functions.call_function import available_functions, call_function
+
+MAX_ITERS = 20
 
 def main():
     parser = argparse.ArgumentParser(description="AI Code Assistant")
@@ -24,7 +27,18 @@ def main():
     if args.verbose:
         print(f"User prompt: {args.user_prompt}\n")
 
-    generate_content(client, messages, args.verbose)
+    for _ in range(MAX_ITERS):
+        try:
+            final_response = generate_content(client, messages, args.verbose)
+            if final_response:
+                print("Final response:")
+                print(final_response)
+                return
+        except Exception as e:
+            print(f"Error in generate_content: {e}")
+
+    print(f"Maximum iterations ({MAX_ITERS}) reached")
+    sys.exit(1)
 
 
 def generate_content(client, messages, verbose):
@@ -43,9 +57,16 @@ def generate_content(client, messages, verbose):
         print("Prompt tokens:", response.usage_metadata.prompt_token_count)
         print("Response tokens:", response.usage_metadata.candidates_token_count)
     
+    if response.candidates:
+        for candidate in response.candidates:
+            if candidate.content:
+                messages.append(candidate.content)
+                
     if not response.function_calls:
-        print("Response:")
-        print(response.text)
+        return response.text
+    
+    function_responses = []
+    print(f"Number of function calls: {len(response.function_calls)}")
     for function_call in response.function_calls:
         function_call_result = call_function(function_call, verbose)
         if not function_call_result.parts:
@@ -57,6 +78,9 @@ def generate_content(client, messages, verbose):
         if verbose:
             print(f"-> {function_call_result.parts[0].function_response.response}")
 
+        function_responses.append(function_call_result.parts[0])
+    
+    messages.append(types.Content(role="user", parts=function_responses))
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,17 @@
+Function calls: [FunctionCall(id=None, args={}, name='get_files_info')]
+
+Candidates: [Candidate(content=Content(parts=[Part(video_metadata=None, thought=None, code_execution_result=None, executable_code=None, file_data=None, function_call=FunctionCall(id=None, args={}, name='get_files_info'), function_response=None, inline_data=None, text=None)], role='model'), citation_metadata=None, finish_message=None, token_count=None, finish_reason=<FinishReason.STOP: 'STOP'>, avg_logprobs=None, grounding_metadata=None, index=0, logprobs_result=None, safety_ratings=None)]
+ - Calling function: get_files_info
+
+
+Function calls: [FunctionCall(id=None, args={'file_path': 'main.py'}, name='get_file_content')]
+Candidates: [Candidate(content=Content(parts=[Part(video_metadata=None, thought=None, code_execution_result=None, executable_code=None, file_data=None, function_call=FunctionCall(id=None, args={'file_path': 'main.py'}, name='get_file_content'), function_response=None, inline_data=None, text=None)], role='model'), citation_metadata=None, finish_message=None, token_count=None, finish_reason=<FinishReason.STOP: 'STOP'>, avg_logprobs=None, grounding_metadata=None, index=0, logprobs_result=None, safety_ratings=None)]
+ - Calling function: get_file_content
+
+
+Function calls: [FunctionCall(id=None, args={'file_path': 'pkg/render.py'}, name='get_file_content')]
+Candidates: [Candidate(content=Content(parts=[Part(video_metadata=None, thought=None, code_execution_result=None, executable_code=None, file_data=None, function_call=FunctionCall(id=None, args={'file_path': 'pkg/render.py'}, name='get_file_content'), function_response=None, inline_data=None, text=None)], role='model'), citation_metadata=None, finish_message=None, token_count=None, finish_reason=<FinishReason.STOP: 'STOP'>, avg_logprobs=None, grounding_metadata=None, index=0, logprobs_result=None, safety_ratings=None)]
+ - Calling function: get_file_content
+
+Response:
+The calculator renders results to the console by first evaluating the expression. Then, it uses the `format_json_output` function from `pkg.render` to format the expression and its result into a JSON string. Finally, this JSON string is printed to the console. If the result is a whole number (float but an integer), it's represented as an integer in the JSON output.
