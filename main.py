@@ -10,7 +10,7 @@ MODEL_ID = "gemini-2.5-flash"
 client = genai.Client(api_key=api_key)
 
 
-def generate_content(query: str) -> str:
+def generate_content(query: str, verbose: bool = False) -> str:
     """Generates content using the Gemini model.
 
     Args:
@@ -20,7 +20,8 @@ def generate_content(query: str) -> str:
         The text content of the model's response.
     """
     response = client.models.generate_content(model=MODEL_ID, contents=query)
-    print_metadata(query, response)
+    if verbose:
+        print_metadata(query, response)
     return response.text
 
 
@@ -51,9 +52,14 @@ def main():
 
     parser = argparse.ArgumentParser(description="Chat with an AI assistant")
     parser.add_argument("user_prompt", type=str, help="The user prompt")
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
     args = parser.parse_args()
     messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
-    generate_content(messages)
+    generate_content(messages, verbose=args.verbose)
 
 
 if __name__ == "__main__":
